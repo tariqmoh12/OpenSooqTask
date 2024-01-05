@@ -6,49 +6,50 @@
 //
 
 import Foundation
+import RealmSwift
 
 // MARK: - DynamicAttributesModel
-struct DynamicAttributesModel: Codable {
-    let success: Bool
-    let result: Result
+class DynamicAttributesModel: Object,Codable {
+    @Persisted var success: Bool
+    @Persisted var result: Result?
 }
 
 // MARK: - Result
-struct Result: Codable {
-    let status: Int
-    let data: DataClass
-    let hash: String
+class Result: Object,Codable {
+    @Persisted var status: Int
+    @Persisted var data: DataClass?
 }
 
 // MARK: - DataClass
-struct DataClass: Codable {
-    let searchFlow: [SearchFlow]
-    let fieldsLabels: Set<FieldsLabel>
-
+class DataClass: Object,Codable {
+    @Persisted(primaryKey: true) var id: Int?
+    @Persisted var searchFlow = List<SearchFlow>()
+    @Persisted var fieldsLabels = List<FieldsLabel>()
     enum CodingKeys: String, CodingKey {
-        case searchFlow = "search_flow"
-        case fieldsLabels = "fields_labels"
-    }
+           case searchFlow = "search_flow"
+           case fieldsLabels = "fields_labels"
+       }
 }
 
 // MARK: - FieldsLabel
-struct FieldsLabel: Codable,Hashable {
-    let fieldName, labelAr, labelEn: String
-
+class FieldsLabel: Object,Codable {
+    @Persisted var fieldName: String = ""
+    @Persisted var labelAr: String = ""
+    @Persisted var labelEn: String = ""
     enum CodingKeys: String, CodingKey {
-        case fieldName = "field_name"
-        case labelAr = "label_ar"
-        case labelEn = "label_en"
-    }
+         case fieldName = "field_name"
+         case labelAr = "label_ar"
+         case labelEn = "label_en"
+     }
+
 }
 
 // MARK: - SearchFlow
-struct SearchFlow: Codable {
-    let categoryID: Int
-    let order: [String]
-
+class SearchFlow: Object,Codable {
+    @Persisted var categoryID: Int
+    @Persisted var order = List<String>()
     enum CodingKeys: String, CodingKey {
-        case categoryID = "category_id"
-        case order
-    }
+           case categoryID = "category_id"
+           case order
+       }
 }

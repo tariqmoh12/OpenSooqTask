@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import RealmSwift
 
 class SubCategoriesVc: UIViewController {
     
-    private var CategoriesData: [CategoryModel]?
-    private var filteredData: [CategoryModel]?
+    private var CategoriesData: List<CategoryModelRealm>?
+    private var filteredData: List<CategoryModelRealm>?
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -56,7 +57,7 @@ class SubCategoriesVc: UIViewController {
         collectionView.anchor(top: searchBar.bottomAnchor,leading: view.leadingAnchor,bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     
-    init(subCategories:[CategoryModel]) {
+    init(subCategories:List<CategoryModelRealm>) {
         super.init(nibName: nil, bundle: nil)
         self.CategoriesData = subCategories
         self.filteredData = subCategories
@@ -99,7 +100,27 @@ extension SubCategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource,
 
 extension SubCategoriesVc: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredData = searchText.isEmpty ? CategoriesData : CategoriesData?.filter { $0.labelEn.lowercased().contains(searchText.lowercased()) }
+      
+        
+        if searchText.isEmpty {
+            filteredData = CategoriesData
+        } else {
+            if let categoriesData = CategoriesData {
+                let filteredArray = Array(categoriesData).filter { (category: CategoryModelRealm) -> Bool in
+                    return category.label_en?.lowercased().contains(searchText.lowercased()) ?? false
+                  }
+                  
+                  // Clear the existing data in filteredData
+                  filteredData?.removeAll()
+                  
+                  // Append the filtered elements to filteredData
+                  filteredData?.append(objectsIn: filteredArray)
+            } else {
+                // Handle the case where CategoriesData is nil
+            }
+        }
+
         collectionView.reloadData()
     }
 }
+

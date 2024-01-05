@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import RealmSwift
 
 protocol SelectOptionProtocol: AnyObject {
     func didSelect(option: Option)
 }
+
 class CustomOuterCollectionViewCell: UICollectionViewCell {
     weak var delegate: SelectOptionProtocol?
     private var fullModel: FullModel?
@@ -72,22 +74,31 @@ extension CustomOuterCollectionViewCell: UICollectionViewDelegate, UICollectionV
         
         switch type {
         case .header:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SectionHeaderCollectionViewCell", for: indexPath) as! SectionHeaderCollectionViewCell
+           
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SectionHeaderCollectionViewCell", for: indexPath) as? SectionHeaderCollectionViewCell else {
+                   fatalError("Unable to dequeue a reusable cell with identifier YourCellReuseIdentifier")
+               }
             if let fullModel = fullModel{
                 cell.setUpCell(title: fullModel.title)
             }
             return cell
             
         case .categoriesList:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomListCollectionViewCell", for: indexPath) as! CustomListCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomListCollectionViewCell", for: indexPath) as? CustomListCollectionViewCell else {
+                   fatalError("Unable to dequeue a reusable cell with identifier YourCellReuseIdentifier")
+               }
+          
             if let fullModel = fullModel {
-                cell.setUpCell(type: cellType!, options: fullModel.options)
+                cell.setUpCell(type: cellType!, options: fullModel.options ?? List<Option>())
             }
             cell.delegate = self
             return cell
             
         case .footer:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SectionFooterCollectionViewCell", for: indexPath) as! SectionFooterCollectionViewCell
+          
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SectionFooterCollectionViewCell", for: indexPath) as? SectionFooterCollectionViewCell else {
+                   fatalError("Unable to dequeue a reusable cell with identifier YourCellReuseIdentifier")
+               }
             if let fullModel = fullModel{
                 cell.setUpCell(title: fullModel.title)
             }
@@ -96,15 +107,25 @@ extension CustomOuterCollectionViewCell: UICollectionViewDelegate, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let type = SectionType(rawValue: indexPath.section) else { return CGSize.zero }
+        guard let type = SectionType(rawValue: indexPath.section), let cellType = cellType else { return CGSize.zero }
         
         switch type {
         case .header:
             return CGSize(width: contentView.frame.width, height: 30)
         case .categoriesList:
-            return CGSize(width: contentView.frame.width, height: 50)
+            switch cellType {
+            case .numeric:
+                return CGSize(width: contentView.frame.width, height: 150)
+            default:
+                return CGSize(width: contentView.frame.width, height: 50)
+            }
         case .footer:
-            return CGSize(width: contentView.frame.width, height: 30)
+            switch cellType {
+            case .numeric:
+                return CGSize(width: contentView.frame.width, height: 0)
+            default:
+                return CGSize(width: contentView.frame.width, height: 30)
+            }
         }
     }
 }

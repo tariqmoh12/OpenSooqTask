@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import RealmSwift
 
 class CategoriesVc: UIViewController {
     
-    private var CategoriesData: CategoriesModel?
-    private var filteredData: [CategoryModel]?
+    private var CategoriesData: List<CategoryModelRealm>?
+    private var filteredData: List<CategoryModelRealm>?
 
     let viewModel = HomeViewModel()
     var isLoading: Bool = false
@@ -69,7 +70,7 @@ class CategoriesVc: UIViewController {
         LoadingViewManager.showLoader(in: self)
         viewModel.onCategoriesUpdate = {[weak self] categories in
             guard let strongSelf = self else { return }
-            strongSelf.CategoriesData = categories
+            strongSelf.CategoriesData = categories.items
             strongSelf.filteredData = categories.items
             strongSelf.updateUI()
         }
@@ -88,6 +89,12 @@ class CategoriesVc: UIViewController {
             guard let strongSelf = self else { return }
             AlertManager.showAlert(in: strongSelf, title: "Error!", message: "\(error.localizedDescription)")
         }
+        
+        viewModel.onSavingError = { [weak self] error in
+            guard let strongSelf = self else { return }
+            AlertManager.showAlert(in: strongSelf, title: "Error!", message: "\(error.localizedDescription)")
+        }
+        
         viewModel.fetchCategories()
     }
     
@@ -121,17 +128,36 @@ extension CategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let subCategories = CategoriesData?.items[indexPath.item].subCategories {
-            let newViewController = SubCategoriesVc(subCategories: subCategories)
+        if let subCategories = CategoriesData?[indexPath.item].subCategories {
+            let itemList = List<CategoryModelRealm>()
+            for category in subCategories {
+                itemList.append(category)
+            }
+            let newViewController = SubCategoriesVc(subCategories: itemList)
             self.navigationController?.pushViewController(newViewController, animated: true)
         }
     }
     
 }
 
+
 extension CategoriesVc: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredData = searchText.isEmpty ? CategoriesData?.items : CategoriesData?.items.filter { $0.labelEn.lowercased().contains(searchText.lowercased()) }
+        
+        
+        if searchText.isEmpty {
+            filteredData = CategoriesData
+        } else {
+            if let categoriesData = CategoriesData {
+                let filteredArray = Array(categoriesData).filter { (category: CategoryModelRealm) -> Bool in
+                    return category.label_en?.lowercased().contains(searchText.lowercased()) ?? false
+                }
+                
+                filteredData?.removeAll()
+                filteredData?.append(objectsIn: filteredArray)
+            } else {
+            }
+        }
         collectionView.reloadData()
     }
 }

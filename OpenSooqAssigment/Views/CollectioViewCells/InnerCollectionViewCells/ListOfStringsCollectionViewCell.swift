@@ -43,6 +43,12 @@ class ListOfStringsCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        rectangularView.backgroundColor = .white
+        titleLabel.textColor = .gray
+    }
+    
     private func setUpViews() {
         contentView.addSubview(rectangularView)
         rectangularView.anchor(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor)

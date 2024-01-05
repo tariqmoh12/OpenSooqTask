@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FilterVc: UIViewController {
     
@@ -13,20 +14,16 @@ class FilterVc: UIViewController {
     private var searchFlow: SearchFlow?
     private var attributes: AttributesOptionsData?
     private var cellsType: [String] = []
-    private var filedLables: Set<FieldsLabel> = Set()
-    private var feilds: Set<AttributesOptionsData> = Set()
-    private var options: Set<Option> = Set()
+    private var fieldLabels = List<FieldsLabel>()
+    private var feilds =  List<AttributesOptionsData>()
+    private var options = List<Option>()
     private var sectionTitle: [String] = []
     private var sectionData: [Item]?
     private var fullModels: [FullModel] = []
+    private var categoriesAllowed: Set<String> = ["list_string","list_string_icon","list_numeric"]
 
     let viewModel = FilterViewModel()
     var isLoading: Bool = false
-    
-    enum CellsType: String, CaseIterable {
-        case listWithIcons = "list_string_icon"
-        case listOfStrings = "list_string"
-    }
 
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -36,7 +33,7 @@ class FilterVc: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(CustomOuterCollectionViewCell.self, forCellWithReuseIdentifier: "CustomOuterCollectionViewCell")
-
+        collectionView.register(NumericCollectionViewCell.self, forCellWithReuseIdentifier: "NumericCollectionViewCell")
         return collectionView
     }()
         
@@ -78,7 +75,7 @@ class FilterVc: UIViewController {
             guard let strongSelf = self else { return }
             strongSelf.searchFlow = attr
             strongSelf.attributes = options
-            strongSelf.filedLables = fields
+            strongSelf.fieldLabels = fields
             strongSelf.getFilterByOrder(orders: attr.order)
         }
         
@@ -100,44 +97,46 @@ class FilterVc: UIViewController {
     }
 
 
-    func getFilterByOrder(orders: [String]) {
+    func getFilterByOrder(orders: List<String>) {
         for order in orders {
             guard let field = self.attributes?.fields.first(where:{$0.name == order}) else { return }
             
             let dataType = field.dataType
-            let id = field.id
+            let id = field.id 
             
             let label = getFilteredLabel(order: order)
             self.sectionTitle.append(label)
 
             let options = getFilteredOptions(id: id)
             let model = FullModel(title: label, options: options)
-            
-            cellsType.append(dataType.rawValue)
-            fullModels.append(model)
+            if categoriesAllowed.contains(dataType)  {
+                cellsType.append(dataType)
+                fullModels.append(model)
+            }
         }
         self.updateUI(for: self.collectionView)
     }
     
     private func getFilteredLabel(order: String)-> String {
-        if let label = self.filedLables.first(where:{$0.fieldName == order})?.labelEn {
+        if let label = self.fieldLabels.first(where:{$0.fieldName == order})?.labelEn {
             return label
         } else {
             return ""
         }
     }
     
-    private func getFilteredOptions(id: Int)-> [Option] {
-        if let options = self.attributes?.options.filter({$0.fieldID == String(id)})
-        {
-            return options
-        } else {
-            return []
+    private func getFilteredOptions(id: Int)-> List<Option> {
+        guard let options = self.attributes?.options.filter({ $0.fieldID == String(id) }) else {
+            return List<Option>()
         }
+        
+        let optionList = List<Option>()
+        optionList.append(objectsIn: options)
+        return optionList
     }
     
     private func getCell(_ indexPath: IndexPath) -> UICollectionViewCell {
-        let cellType = cellsType[indexPath.row]
+        let cellType = cellsType[indexPath.section]
         switch cellType {
         case "list_string_icon":
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomOuterCollectionViewCell", for: indexPath) as? CustomOuterCollectionViewCell else {
@@ -153,6 +152,14 @@ class FilterVc: UIViewController {
                 return UICollectionViewCell()
             }
             cell.setUpCell(fullModel: fullModels[indexPath.section], type: .titles)
+            cell.delegate = self
+            return cell
+            
+        case "list_numeric":
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomOuterCollectionViewCell", for: indexPath) as? CustomOuterCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.setUpCell(fullModel: fullModels[indexPath.section], type: .numeric)
             cell.delegate = self
             return cell
         default:

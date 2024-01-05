@@ -51,8 +51,10 @@ class CircularCollectionViewCell: UICollectionViewCell {
     }
     
     private func setUpImageView() {
-        guard let model = model else { return }
-        if let imageUrl = model.optionImg, let url = URL(string: imageUrl) {
+        guard let model = model, let imageUrl = model.optionImg, let url = URL(string: imageUrl) else {
+            iconImageView.image = UIImage(named: "default-placeholder")
+            return }
+        if URLValidator.isFullURL(imageUrl) {
             ImageLoader.loadImage(from: url, into: iconImageView)
         } else {
             iconImageView.image = UIImage(named: "default-placeholder")

@@ -18,4 +18,5 @@ enum SectionType:CaseIterable {
 enum CellInnerItemsType: Int, CaseIterable {
     case icons
     case titles
+    case numeric
 }

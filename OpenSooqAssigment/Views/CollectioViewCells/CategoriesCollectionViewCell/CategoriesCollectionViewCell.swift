@@ -41,9 +41,9 @@ class CategoriesCollectionViewCell: UICollectionViewCell {
         titleLabel.anchor(top: contentView.topAnchor,leading: iconImageView.trailingAnchor,bottom: contentView.bottomAnchor, padding: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0))
     }
     
-    func configure(with model: CategoryModel) {
-        titleLabel.text = model.labelEn
-        if let imageUrl = URL(string: model.icon) {
+    func configure(with model: CategoryModelRealm) {
+        titleLabel.text = model.label_en
+        if let imageUrl = URL(string: model.icon ?? "") {
             ImageLoader.loadImage(from: imageUrl, into: iconImageView)
         }
     }

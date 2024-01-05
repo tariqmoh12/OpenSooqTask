@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import RealmSwift
 struct Item {
     let section: Int
     let sectionName: String
@@ -14,5 +14,5 @@ struct Item {
 
 struct FullModel {
     let title: String
-    let options: [Option]
+    let options : List<Option>?
 }

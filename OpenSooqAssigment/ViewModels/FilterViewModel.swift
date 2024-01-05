@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import RealmSwift
 class FilterViewModel {
     
-    var onAttributesUpdate: ((SearchFlow,Set<FieldsLabel>, AttributesOptionsData) -> Void)?
+    var onAttributesUpdate: ((SearchFlow,List<FieldsLabel>, AttributesOptionsData) -> Void)?
     var onLoadingStateChanged: ((Bool) -> Void)?
     var onError: ((Error) -> Void)?
 
@@ -25,19 +26,18 @@ class FilterViewModel {
     
     func fetchData(categoryId: Int) {
         isLoading = true
-        
-        let jsonParser = JSONParser()
-        jsonParser.fetchDynamicAttributes(categoryId: categoryId) { [weak self] attributesTask1, attributesTask2, attributesTask3, error in
-            guard let self = self else { return }
-            self.isLoading = false
-            if let error = error {
-                self.onError?(error)
-            } else {
-                if let attributes1 = attributesTask1, let attributes2 = attributesTask2, let attributes3 = attributesTask3 {
-                    self.onAttributesUpdate?(attributes1, attributes3, attributes2)
+            let jsonParser = JSONParser()
+            jsonParser.fetchDynamicAttributes(categoryId: categoryId) { [weak self] attributesTask1, attributesTask2, attributesTask3, error in
+                guard let self = self else { return }
+                self.isLoading = false
+                if let error = error {
+                    self.onError?(error)
+                } else {
+                    if let attributes1 = attributesTask1, let attributes2 = attributesTask2, let attributes3 = attributesTask3 {
+                        self.onAttributesUpdate?(attributes1, attributes3, attributes2)
+                    }
                 }
             }
-        }
     }
     
     func addToSelectedCategories(option: Option) {

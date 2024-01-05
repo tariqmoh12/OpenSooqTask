@@ -6,12 +6,12 @@
 //
 
 import UIKit
-
+import RealmSwift
 
 class CustomListCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: SelectOptionProtocol?
-    private var options: [Option]?
+    private var options: List<Option>?
     private var type: CellInnerItemsType?
 
     lazy var innerCollectionView: UICollectionView = {
@@ -24,6 +24,7 @@ class CustomListCollectionViewCell: UICollectionViewCell {
         collectionView.delegate = self
         collectionView.register(CircularCollectionViewCell.self, forCellWithReuseIdentifier: "CircularCollectionViewCell")
         collectionView.register(ListOfStringsCollectionViewCell.self, forCellWithReuseIdentifier: "ListOfStringsCollectionViewCell")
+        collectionView.register(NumericCollectionViewCell.self, forCellWithReuseIdentifier: "NumericCollectionViewCell")        
         return collectionView
     }()
 
@@ -58,10 +59,14 @@ class CustomListCollectionViewCell: UICollectionViewCell {
             collectionView.showsHorizontalScrollIndicator = false
             collectionView.allowsMultipleSelection = true
             self.innerCollectionView = collectionView
+        case .numeric:
+            let layout = UICollectionViewFlowLayout()
+            layout.scrollDirection = .vertical
+            innerCollectionView.collectionViewLayout = layout
         }
     }
     
-    func setUpCell(type: CellInnerItemsType,options: [Option]) {
+    func setUpCell(type: CellInnerItemsType,options: List<Option>) {
         self.type = type
         self.options = options
         setUpCollectionView(type: type)
@@ -72,27 +77,47 @@ extension CustomListCollectionViewCell: UICollectionViewDelegate, UICollectionVi
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return options?.count ?? 0
+        guard let type = type else { return 0 }
+        switch type {
+        case .numeric:
+            return 1
+        default:
+            return options?.count ?? 0
+        }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let type = type else { return UICollectionViewCell() }
         
         switch type {
         case .icons:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CircularCollectionViewCell", for: indexPath) as! CircularCollectionViewCell
+            
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CircularCollectionViewCell", for: indexPath) as? CircularCollectionViewCell else {
+                fatalError("Unable to dequeue a reusable cell with identifier YourCellReuseIdentifier")
+            }
             cell.model = options?[indexPath.item]
             return cell
             
         case .titles:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ListOfStringsCollectionViewCell", for: indexPath) as! ListOfStringsCollectionViewCell
+            
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ListOfStringsCollectionViewCell", for: indexPath) as? ListOfStringsCollectionViewCell else {
+                fatalError("Unable to dequeue a reusable cell with identifier YourCellReuseIdentifier")
+            }
             cell.model = options?[indexPath.item]
+            return cell
+        case .numeric:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumericCollectionViewCell", for: indexPath) as? NumericCollectionViewCell else {
+                fatalError("Unable to dequeue a reusable cell with identifier YourCellReuseIdentifier")
+            }
+            if let options = options {
+                cell.setUpCell(options: options)
+            }
             return cell
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let type = type else { return CGSize.zero }
         
@@ -119,11 +144,26 @@ extension CustomListCollectionViewCell: UICollectionViewDelegate, UICollectionVi
             } else {
                 return CGSize()
             }
+        case .numeric:
+            return CGSize(width: self.contentView.frame.width, height: 100)
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let options = options else { return }
         delegate?.didSelect(option: options[indexPath.item])
+        guard let type = type else { return  }
+        switch type {
+        case .titles:
+            if let selectedIndexPath = collectionView.indexPathsForSelectedItems?.first {
+                collectionView.deselectItem(at: selectedIndexPath, animated: false)
+            }
+            if let cell = collectionView.cellForItem(at: indexPath) as? ListOfStringsCollectionViewCell {
+                cell.rectangularView.backgroundColor = .systemBlue
+                cell.titleLabel.textColor = .white
+            }
+        default:
+            break
+        }
     }
 }
