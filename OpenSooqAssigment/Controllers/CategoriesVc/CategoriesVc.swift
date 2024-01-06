@@ -146,7 +146,6 @@ extension CategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource, UI
 extension CategoriesVc: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        
         if searchText.isEmpty {
             filteredData = categoriesData
         } else {
@@ -154,10 +153,10 @@ extension CategoriesVc: UISearchBarDelegate {
                 let filteredArray = Array(categoriesData).filter { (category: CategoryModelRealm) -> Bool in
                     return category.label_en?.lowercased().contains(searchText.lowercased()) ?? false
                 }
-                
-                filteredData?.removeAll()
-                filteredData?.append(objectsIn: filteredArray)
+                filteredData = List<CategoryModelRealm>()
+                filteredArray.forEach { filteredData?.append($0) }
             } else {
+                filteredData = nil
             }
         }
         collectionView.reloadData()

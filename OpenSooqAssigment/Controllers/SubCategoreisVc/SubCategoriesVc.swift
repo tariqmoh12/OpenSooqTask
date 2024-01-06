@@ -11,7 +11,7 @@ import RealmSwift
 // MARK: - SubCategoriesVc
 class SubCategoriesVc: UIViewController {
     
-    private var CategoriesData: List<CategoryModelRealm>?
+    private var categoriesData: List<CategoryModelRealm>?
     private var filteredData: List<CategoryModelRealm>?
     
     lazy var collectionView: UICollectionView = {
@@ -60,7 +60,7 @@ class SubCategoriesVc: UIViewController {
     
     init(subCategories:List<CategoryModelRealm>) {
         super.init(nibName: nil, bundle: nil)
-        self.CategoriesData = subCategories
+        self.categoriesData = subCategories
         self.filteredData = subCategories
     }
     
@@ -102,19 +102,20 @@ extension SubCategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource,
 // MARK: - UISearchBarDelegate
 extension SubCategoriesVc: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
         if searchText.isEmpty {
-            filteredData = CategoriesData
+            filteredData = categoriesData
         } else {
-            if let categoriesData = CategoriesData {
+            if let categoriesData = categoriesData {
                 let filteredArray = Array(categoriesData).filter { (category: CategoryModelRealm) -> Bool in
                     return category.label_en?.lowercased().contains(searchText.lowercased()) ?? false
                 }
-                filteredData?.removeAll()
-                filteredData?.append(objectsIn: filteredArray)
+                filteredData = List<CategoryModelRealm>()
+                filteredArray.forEach { filteredData?.append($0) }
             } else {
+                filteredData = nil
             }
         }
         collectionView.reloadData()
     }
 }
-
