@@ -8,10 +8,12 @@
 import UIKit
 import RealmSwift
 
+// MARK: - SelectOptionProtocol
 protocol SelectOptionProtocol: AnyObject {
     func didSelect(option: Option)
 }
 
+// MARK: - CategoriesCollectionViewCell
 class CustomOuterCollectionViewCell: UICollectionViewCell {
     weak var delegate: SelectOptionProtocol?
     private var fullModel: FullModel?
@@ -59,6 +61,7 @@ class CustomOuterCollectionViewCell: UICollectionViewCell {
     }
 }
 
+// MARK: - UICollectionViewDelegates & DataSource
 extension CustomOuterCollectionViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -130,6 +133,7 @@ extension CustomOuterCollectionViewCell: UICollectionViewDelegate, UICollectionV
     }
 }
 
+// MARK: - Selection Protocol
 extension CustomOuterCollectionViewCell: SelectOptionProtocol {
     func didSelect(option: Option) {
         delegate?.didSelect(option: option)

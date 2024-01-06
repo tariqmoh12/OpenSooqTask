@@ -8,6 +8,7 @@
 import UIKit
 import RealmSwift
 
+// MARK: - CustomListCollectionViewCell
 class CustomListCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: SelectOptionProtocol?
@@ -24,7 +25,7 @@ class CustomListCollectionViewCell: UICollectionViewCell {
         collectionView.delegate = self
         collectionView.register(CircularCollectionViewCell.self, forCellWithReuseIdentifier: "CircularCollectionViewCell")
         collectionView.register(ListOfStringsCollectionViewCell.self, forCellWithReuseIdentifier: "ListOfStringsCollectionViewCell")
-        collectionView.register(NumericCollectionViewCell.self, forCellWithReuseIdentifier: "NumericCollectionViewCell")        
+        collectionView.register(NumericCollectionViewCell.self, forCellWithReuseIdentifier: "NumericCollectionViewCell")
         return collectionView
     }()
 
@@ -73,6 +74,7 @@ class CustomListCollectionViewCell: UICollectionViewCell {
     }
 }
 
+// MARK: - UICollectionViewDelegates & DataSource
 extension CustomListCollectionViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1

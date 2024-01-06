@@ -9,11 +9,13 @@ import Foundation
 import RealmSwift
 import Realm
 
+// MARK: - CustomResult
 enum CustomResult<T> {
     case success(T)
     case failure(Error)
 }
 
+// MARK: - RealmManager
 final class RealmManager {
     static let shared = RealmManager()
 

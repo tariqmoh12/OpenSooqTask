@@ -8,6 +8,7 @@
 import UIKit
 import RealmSwift
 
+// MARK: - CategoriesVc
 class CategoriesVc: UIViewController {
     
     private var CategoriesData: List<CategoryModelRealm>?
@@ -105,6 +106,7 @@ class CategoriesVc: UIViewController {
     }
 }
 
+// MARK: - UICollectionViewDelegates & DataSource
 extension CategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return filteredData?.count ?? 0
@@ -140,7 +142,7 @@ extension CategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource, UI
     
 }
 
-
+// MARK: - UISearchBarDelegate
 extension CategoriesVc: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         

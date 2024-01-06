@@ -8,8 +8,9 @@
 import Foundation
 import RealmSwift
 
+// MARK: - DataSaver
 class DataSaver {
-    static  func saveData<T: Object>(_ object: T, fileNum: Int) {
+    static func saveData<T: Object>(_ object: T, fileNum: Int) {
         RealmManager.shared.saveObject(object) { result in
             switch result {
             case .success:

@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - SectionFooterCollectionViewCell
 class SectionFooterCollectionViewCell: UICollectionViewCell {
     
     lazy var arrowImageView: UIImageView = {

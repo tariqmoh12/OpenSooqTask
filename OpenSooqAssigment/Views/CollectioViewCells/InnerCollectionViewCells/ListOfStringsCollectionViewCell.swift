@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - ListOfStringsCollectionViewCell
 class ListOfStringsCollectionViewCell: UICollectionViewCell {
     
     var model: Option? {
@@ -32,7 +33,7 @@ class ListOfStringsCollectionViewCell: UICollectionViewCell {
         label.textColor = .gray
         label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         return label
-    }()  
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

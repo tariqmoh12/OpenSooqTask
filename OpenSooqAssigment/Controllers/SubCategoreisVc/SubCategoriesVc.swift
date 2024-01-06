@@ -8,6 +8,7 @@
 import UIKit
 import RealmSwift
 
+// MARK: - SubCategoriesVc
 class SubCategoriesVc: UIViewController {
     
     private var CategoriesData: List<CategoryModelRealm>?
@@ -68,7 +69,7 @@ class SubCategoriesVc: UIViewController {
     }
 }
 
-
+// MARK: - UICollectionViewDelegates & DataSource
 extension SubCategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return filteredData?.count ?? 0
@@ -98,28 +99,21 @@ extension SubCategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource,
     }
 }
 
+// MARK: - UISearchBarDelegate
 extension SubCategoriesVc: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-      
-        
         if searchText.isEmpty {
             filteredData = CategoriesData
         } else {
             if let categoriesData = CategoriesData {
                 let filteredArray = Array(categoriesData).filter { (category: CategoryModelRealm) -> Bool in
                     return category.label_en?.lowercased().contains(searchText.lowercased()) ?? false
-                  }
-                  
-                  // Clear the existing data in filteredData
-                  filteredData?.removeAll()
-                  
-                  // Append the filtered elements to filteredData
-                  filteredData?.append(objectsIn: filteredArray)
+                }
+                filteredData?.removeAll()
+                filteredData?.append(objectsIn: filteredArray)
             } else {
-                // Handle the case where CategoriesData is nil
             }
         }
-
         collectionView.reloadData()
     }
 }

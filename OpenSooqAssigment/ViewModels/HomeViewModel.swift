@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-
+// MARK: - HomeViewModel
 class HomeViewModel {
     
     var onCategoriesUpdate: ((CategoriesModelRealm) -> Void)?

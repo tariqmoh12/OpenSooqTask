@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - SectionHeaderCollectionViewCell
 class SectionHeaderCollectionViewCell: UICollectionViewCell {
     
     lazy var titleLabel: UILabel = {

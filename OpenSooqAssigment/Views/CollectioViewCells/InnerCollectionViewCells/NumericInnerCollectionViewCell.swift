@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - NumericInnerCollectionViewCell
 class NumericInnerCollectionViewCell: UICollectionViewCell {
     
     var model: Option? {

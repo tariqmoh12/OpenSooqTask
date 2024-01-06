@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - SectionType
 enum SectionType:CaseIterable {
     case list_string_icon
     case list_numeric
@@ -15,6 +16,7 @@ enum SectionType:CaseIterable {
     case boolean
 }
 
+// MARK: - CellInnerItemsType
 enum CellInnerItemsType: Int, CaseIterable {
     case icons
     case titles

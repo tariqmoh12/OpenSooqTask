@@ -8,8 +8,9 @@
 import Foundation
 import UIKit
 import RealmSwift
+
+// MARK: - JSONParser
 class JSONParser {
-    
     class func parseDataFromJson(completion: @escaping (CategoriesModelRealm?, Error?) -> Void) {
         do {
             if let path = Bundle.main.path(forResource: "categoriesAndsubCategories", ofType: "json") {

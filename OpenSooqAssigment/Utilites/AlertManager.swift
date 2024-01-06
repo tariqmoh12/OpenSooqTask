@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - AlertManager
 class AlertManager {
     static func showAlert(in viewController: UIViewController, title: String, message: String, style: UIAlertController.Style = .alert) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: style)

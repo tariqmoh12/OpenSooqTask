@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+// MARK: - LoadingViewManager
 class LoadingViewManager {
     private static var loaderView: UIActivityIndicatorView?
     

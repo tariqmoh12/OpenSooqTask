@@ -8,6 +8,7 @@
 import UIKit
 import RealmSwift
 
+// MARK: - FilterVc
 class FilterVc: UIViewController {
     
     private var categoryId: Int = 0
@@ -102,7 +103,7 @@ class FilterVc: UIViewController {
             guard let field = self.attributes?.fields.first(where:{$0.name == order}) else { return }
             
             let dataType = field.dataType
-            let id = field.id 
+            let id = field.id
             
             let label = getFilteredLabel(order: order)
             self.sectionTitle.append(label)
@@ -168,6 +169,7 @@ class FilterVc: UIViewController {
     }
 }
 
+// MARK: - UISearchBarDelegate
 extension FilterVc: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

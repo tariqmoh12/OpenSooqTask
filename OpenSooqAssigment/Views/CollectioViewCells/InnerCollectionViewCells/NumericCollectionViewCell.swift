@@ -7,6 +7,8 @@
 
 import UIKit
 import RealmSwift
+
+// MARK: - NumericCollectionViewCell
 class NumericCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: SelectOptionProtocol?
@@ -47,6 +49,7 @@ class NumericCollectionViewCell: UICollectionViewCell {
     }
 }
 
+// MARK: - UICollectionViewDelegates & DataSource
 extension NumericCollectionViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1

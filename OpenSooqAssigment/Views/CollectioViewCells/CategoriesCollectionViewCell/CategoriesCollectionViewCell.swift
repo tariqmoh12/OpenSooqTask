@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - CategoriesCollectionViewCell
 class CategoriesCollectionViewCell: UICollectionViewCell {
     
     lazy var titleLabel: UILabel = {

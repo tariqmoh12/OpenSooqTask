@@ -7,6 +7,8 @@
 
 import Foundation
 import RealmSwift
+
+// MARK: - FilterViewModel
 class FilterViewModel {
     
     var onAttributesUpdate: ((SearchFlow,List<FieldsLabel>, AttributesOptionsData) -> Void)?

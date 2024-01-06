@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - CircularCollectionViewCell
 class CircularCollectionViewCell: UICollectionViewCell {
     
     var model: Option? {
