@@ -11,7 +11,7 @@ import RealmSwift
 // MARK: - CategoriesVc
 class CategoriesVc: UIViewController {
     
-    private var CategoriesData: List<CategoryModelRealm>?
+    private var categoriesData: List<CategoryModelRealm>?
     private var filteredData: List<CategoryModelRealm>?
 
     let viewModel = HomeViewModel()
@@ -71,7 +71,7 @@ class CategoriesVc: UIViewController {
         LoadingViewManager.showLoader(in: self)
         viewModel.onCategoriesUpdate = {[weak self] categories in
             guard let strongSelf = self else { return }
-            strongSelf.CategoriesData = categories.items
+            strongSelf.categoriesData = categories.items
             strongSelf.filteredData = categories.items
             strongSelf.updateUI()
         }
@@ -130,7 +130,7 @@ extension CategoriesVc: UICollectionViewDelegate, UICollectionViewDataSource, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let subCategories = CategoriesData?[indexPath.item].subCategories {
+        if let subCategories = categoriesData?[indexPath.item].subCategories {
             let itemList = List<CategoryModelRealm>()
             for category in subCategories {
                 itemList.append(category)
@@ -148,9 +148,9 @@ extension CategoriesVc: UISearchBarDelegate {
         
         
         if searchText.isEmpty {
-            filteredData = CategoriesData
+            filteredData = categoriesData
         } else {
-            if let categoriesData = CategoriesData {
+            if let categoriesData = categoriesData {
                 let filteredArray = Array(categoriesData).filter { (category: CategoryModelRealm) -> Bool in
                     return category.label_en?.lowercased().contains(searchText.lowercased()) ?? false
                 }
